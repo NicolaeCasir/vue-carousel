@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="VueCarousel"
-    v-bind:class="{ 'VueCarousel--reverse': paginationPosition === 'top' }"
-  >
+  <section class="VueCarousel">
     <div
       class="VueCarousel-wrapper"
       ref="VueCarousel-wrapper"
@@ -29,6 +26,10 @@
       </div>
     </div>
 
+    <slot name="pagination" v-if="paginationEnabled">
+      <pagination @paginationclick="goToPage($event, 'pagination')"/>
+    </slot>
+
     <slot name="navigation" v-if="navigationEnabled">
       <navigation
         v-if="isNavigationRequired"
@@ -38,11 +39,7 @@
         @navigationclick="handleNavigation"
       />
     </slot>
-
-    <slot name="pagination" v-if="paginationEnabled">
-      <pagination @paginationclick="goToPage($event, 'pagination')"/>
-    </slot>
-  </div>
+  </section>
 </template>
 <script>
 import autoplay from "./mixins/autoplay";
@@ -142,13 +139,6 @@ export default {
      */
     easing: {
       type: String,
-      validator: function(value) {
-        return (
-          ["ease", "linear", "ease-in", "ease-out", "ease-in-out"].indexOf(
-            value
-          ) !== -1 || value.includes("cubic-bezier")
-        );
-      },
       default: "ease"
     },
     /**
@@ -173,7 +163,7 @@ export default {
       type: Boolean,
       default: true
     },
-    /**
+    /*
      * Flag to toggle touch dragging
      */
     touchDrag: {
@@ -184,7 +174,7 @@ export default {
      * Listen for an external navigation request using this prop.
      */
     navigateTo: {
-      type: [Number, Array],
+      type: Number,
       default: 0
     },
     /**
@@ -248,14 +238,6 @@ export default {
       default: 10
     },
     /**
-     * Configure the position for the pagination component.
-     * The possible values are: 'bottom', 'top', 'bottom-overlay' and 'top-overlay'
-     */
-    paginationPosition: {
-      type: String,
-      default: "bottom"
-    },
-    /**
      * The size of each pagination dot
      * Pixel values are accepted
      */
@@ -317,32 +299,10 @@ export default {
       default: 500
     },
     /**
-     * Name (tag) of slide component
-     * Overwrite when extending slide component
-     */
-    tagName: {
-      type: String,
-      default: "slide"
-    },
-    /**
      * Support for v-model functionality
      */
     value: {
       type: Number
-    },
-    /**
-     * Support Max pagination dot amount
-     */
-    maxPaginationDotCount: {
-      type: Number,
-      default: -1
-    },
-    /**
-     * Support right to left
-     */
-    rtl: {
-      type: Boolean,
-      default: false
     }
   },
   watch: {
@@ -379,15 +339,7 @@ export default {
     },
     currentPage(val) {
       this.$emit("pageChange", val);
-      this.$emit("page-change", val);
       this.$emit("input", val);
-    },
-    autoplay(val) {
-      if (val === false) {
-        this.pauseAutoplay();
-      } else {
-        this.restartAutoplay();
-      }
     }
   },
   computed: {
@@ -447,8 +399,6 @@ export default {
     currentOffset() {
       if (this.isCenterModeEnabled) {
         return 0;
-      } else if (this.rtl) {
-        return (this.offset - this.dragOffset) * 1;
       } else {
         return (this.offset + this.dragOffset) * -1;
       }
@@ -491,13 +441,13 @@ export default {
      * @return {Boolean} Is navigation required?
      */
     isNavigationRequired() {
-      return this.slideCount > this.currentPerPage;
+      return this.slideCount <= this.currentPerPage ? false : true;
     },
     /**
      * @return {Boolean} Center images when have less than min currentPerPage value
      */
     isCenterModeEnabled() {
-      return this.centerMode && !this.isNavigationRequired;
+      return this.centerMode && !this.isNavigationRequired ? true : false;
     },
     transitionStyle() {
       const speed = `${this.speed / 1000}s`;
@@ -601,8 +551,6 @@ export default {
     },
     handleNavigation(direction) {
       this.advancePage(direction);
-      this.pauseAutoplay();
-      this.$emit("navigation-click", direction);
     },
     /**
      * Stop listening to mutation changes
@@ -667,9 +615,7 @@ export default {
         (this.$slots &&
           this.$slots.default &&
           this.$slots.default.filter(
-            slot =>
-              slot.tag &&
-              slot.tag.match(`^vue-component-\\d+-${this.tagName}$`) !== null
+            slot => slot.tag && slot.tag.indexOf("slide") > -1
           ).length) ||
         0;
     },
@@ -679,27 +625,23 @@ export default {
      */
     getSlide(index) {
       const slides = this.$children.filter(
-        child =>
-          child.$vnode.tag.match(`^vue-component-\\d+-${this.tagName}$`) !==
-          null
+        child => child.$vnode.tag.indexOf("slide") > -1
       );
       return slides[index];
     },
     /**
      * Set the current page to a specific value
      * This function will only apply the change if the value is within the carousel bounds
-     * for carousel scrolling per page.
      * @param  {Number} page The value of the new page number
-     * @param  {string|undefined} advanceType An optional value describing the type of page advance
      */
-    goToPage(page, advanceType) {
+    goToPage(page) {
       if (page >= 0 && page <= this.pageCount) {
         this.offset = this.scrollPerPage
           ? Math.min(
               this.slideWidth * this.currentPerPage * page,
               this.maxOffset
             )
-          : this.slideWidth * page;
+          : Math.min(this.slideWidth * page, this.maxOffset);
 
         // restart autoplay if specified
         if (this.autoplay && !this.autoplayHoverPause) {
@@ -708,11 +650,6 @@ export default {
 
         // update the current page
         this.currentPage = page;
-
-        if (advanceType === "pagination") {
-          this.pauseAutoplay();
-          this.$emit("pagination-click", page);
-        }
       }
     },
     /**
@@ -722,12 +659,6 @@ export default {
     /* istanbul ignore next */
     onStart(e) {
       // alert("start");
-
-      // detect right click
-      if (e.button == 2) {
-        return;
-      }
-
       document.addEventListener(
         this.isTouch ? "touchend" : "mouseup",
         this.onEnd,
@@ -755,7 +686,6 @@ export default {
       if (this.autoplay && !this.autoplayHoverPause) {
         this.restartAutoplay();
       }
-      this.pauseAutoplay();
 
       // compute the momemtum speed
       const eventPosX = this.isTouch ? e.changedTouches[0].clientX : e.clientX;
@@ -773,11 +703,7 @@ export default {
         this.dragOffset = this.dragOffset + Math.sign(deltaX) * (width / 2);
       }
 
-      if (this.rtl) {
-        this.offset -= this.dragOffset;
-      } else {
-        this.offset += this.dragOffset;
-      }
+      this.offset += this.dragOffset;
       this.dragOffset = 0;
       this.dragging = false;
 
@@ -815,19 +741,10 @@ export default {
 
       this.dragOffset = newOffsetX;
       const nextOffset = this.offset + this.dragOffset;
-
-      if (this.rtl) {
-        if (this.offset == 0 && this.dragOffset > 0) {
-          this.dragOffset = Math.sqrt(this.resistanceCoef * this.dragOffset);
-        } else if (this.offset == this.maxOffset && this.dragOffset < 0) {
-          this.dragOffset = -Math.sqrt(-this.resistanceCoef * this.dragOffset);
-        }
-      } else {
-        if (nextOffset < 0) {
-          this.dragOffset = -Math.sqrt(-this.resistanceCoef * this.dragOffset);
-        } else if (nextOffset > this.maxOffset) {
-          this.dragOffset = Math.sqrt(this.resistanceCoef * this.dragOffset);
-        }
+      if (nextOffset < 0) {
+        this.dragOffset = -Math.sqrt(-this.resistanceCoef * this.dragOffset);
+      } else if (nextOffset > this.maxOffset) {
+        this.dragOffset = Math.sqrt(this.resistanceCoef * this.dragOffset);
       }
     },
     onResize() {
@@ -843,19 +760,11 @@ export default {
     },
     render() {
       // add extra slides depending on the momemtum speed
-      if (this.rtl) {
-        this.offset -=
-          Math.max(
-            -this.currentPerPage + 1,
-            Math.min(Math.round(this.dragMomentum), this.currentPerPage - 1)
-          ) * this.slideWidth;
-      } else {
-        this.offset +=
-          Math.max(
-            -this.currentPerPage + 1,
-            Math.min(Math.round(this.dragMomentum), this.currentPerPage - 1)
-          ) * this.slideWidth;
-      }
+      this.offset +=
+        Math.max(
+          -this.currentPerPage + 1,
+          Math.min(Math.round(this.dragMomentum), this.currentPerPage - 1)
+        ) * this.slideWidth;
 
       // & snap the new offset on a slide or page if scrollPerPage
       const width = this.scrollPerPage
@@ -864,7 +773,7 @@ export default {
 
       // lock offset to either the nearest page, or to the last slide
       const lastFullPageOffset =
-        width * Math.floor(this.slideCount / (this.currentPerPage - 1));
+        width * Math.floor(this.slideCount / this.currentPerPage - 1);
       const remainderOffset =
         lastFullPageOffset +
         this.slideWidth * (this.slideCount % this.currentPerPage);
@@ -909,11 +818,9 @@ export default {
     },
     handleTransitionStart() {
       this.$emit("transitionStart");
-      this.$emit("transition-start");
     },
     handleTransitionEnd() {
       this.$emit("transitionEnd");
-      this.$emit("transition-end");
     }
   },
   mounted() {
@@ -973,13 +880,7 @@ export default {
 </script>
 <style>
 .VueCarousel {
-  display: flex;
-  flex-direction: column;
   position: relative;
-}
-
-.VueCarousel--reverse {
-  flex-direction: column-reverse;
 }
 
 .VueCarousel-wrapper {

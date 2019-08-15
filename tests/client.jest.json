@@ -1,19 +1,15 @@
 {
   "verbose": true,
-  "rootDir": "../",
   "transform": {
-    "^.+\\.js?$": "babel-jest",
-    "^.+\\.vue$": "vue-jest"
+    ".*\\.(js|vue)$": "<rootDir>/preprocessor.js"
   },
-  "snapshotSerializers": [
-    "jest-serializer-vue"
-  ],
   "testPathIgnorePatterns": [
     "/node_modules/",
     "/debug/"
   ],
   "collectCoverageFrom": [
-    "src/**/*.{vue,js}"
+    "src/*.vue",
+    "src/mixins/*.js"
   ],
   "moduleFileExtensions": [
     "node",
@@ -22,7 +18,7 @@
     "js"
   ],
   "testRegex": ".*\\.spec.js$",
-  "coverageDirectory": "<rootDir>/coverage",
+  "coverageDirectory": "<rootDir>/coverage/client",
   "coverageReporters": [
     "json",
     "html",

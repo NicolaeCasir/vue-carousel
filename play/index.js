@@ -14,24 +14,7 @@ const images = [
   "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176002_5.jpg",
   "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_2.jpg"
 ]
-const LargeAmountImages = [
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176006_1.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176005_2.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176003_3.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176004_4.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176002_5.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_2.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176004_4.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176002_5.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_2.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176004_4.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176002_5.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_2.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_2.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176004_4.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176002_5.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_2.jpg"
-]
+
 const generateSlideImages = (createElement) => images.map((image) =>
   createElement(Slide, {}, [
     createElement(
@@ -111,10 +94,7 @@ play("Carousel", module)
     h, containerWidth, [h(Carousel, { props: { autoplay: true, autoplayHoverPause: false } }, generateSlideImages(h))]
   )
 )
-.add("Autoplay, navigation", h => createContainer(
-  h, containerWidth, [h(Carousel, { props: { autoplay: true, autoplayHoverPause: false , navigationEnabled: true} }, generateSlideImages(h))]
-)
-).add("Autoplay, Looping", h => createContainer(
+.add("Autoplay, Looping", h => createContainer(
   h, containerWidth, [h(Carousel, { props: { autoplay: true, autoplayHoverPause: false, loop: true } }, generateSlideImages(h))]
 )
 )
@@ -122,35 +102,6 @@ play("Carousel", module)
       h, containerWidth, [h(Carousel, { props: { autoplay: true, autoplayHoverPause: true } }, generateSlideImages(h))]
     )
   )
-  .add("Autoplay, Pause/Resume", {
-    template:
-      `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;" :autoplay="autoplay" :loop="true">
-          <slide v-for="slide in slideCount" :key="slide">
-            <img style="width: 100%;" src="https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176006_1.jpg" />
-          </slide>
-        </carousel>
-        <div style="float: left">
-          <pre>Autoplay Status: {{ autoplay }}</pre>
-          <button v-on:click="toggleAutoplay()">Toggle Autoplay</button>
-        </div>
-      </div>`,
-    components: {
-      Carousel,
-      Slide
-    },
-    data() {
-      return {
-        autoplay: true,
-        slideCount: 8
-      }
-    },
-    methods: {
-      toggleAutoplay() {
-        this.autoplay = !this.autoplay;
-      },
-    }
-  })
   .add("Dynamic, add or remove slides", {
     template:
       `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
@@ -200,55 +151,7 @@ play("Carousel", module)
       h, containerWidth, [h('style', '.VueCarousel-navigation-button { font-size: 36px; }'), h(Carousel, { props: { paginationColor: '#fac232', paginationActiveColor: '#c9750c', navigationEnabled: true, navigationNextLabel: '👉', navigationPrevLabel: '👈' } }, generateSlideImages(h))]
     )
   )
-  .add("navigation-click event", {
-    template:
-      `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;" @navigation-click="onNavigationClick" navigationEnabled :paginationEnabled="false">
-          <slide v-for="slide in slides" :key="slide">
-            <img style="width: 100%;" :src="slide" />
-          </slide>
-        </carousel>
-      </div>`,
-    components: {
-      Carousel,
-      Slide
-    },
-    data() {
-      return {
-        slides: images
-      }
-    },
-    methods: {
-      onNavigationClick(direction) {
-        this.$log(`Captured [navigation-click] event. Current direction is ${direction}`)
-      },
-    }
-  })
-  .add("pagination-click event", {
-    template:
-      `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;" @pagination-click="onPaginationClick">
-          <slide v-for="slide in slides" :key="slide">
-            <img style="width: 100%;" :src="slide" />
-          </slide>
-        </carousel>
-      </div>`,
-    components: {
-      Carousel,
-      Slide
-    },
-    data() {
-      return {
-        slides: images
-      }
-    },
-    methods: {
-      onPaginationClick (currentPage) {
-        this.$log(`Captured [pagination-click] event. Current page is ${currentPage}`)
-      },
-    }
-  })
-  .add("pageChange event", {
+  .add("With local event on pageChange", {
     template:
       `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
         <carousel style="width: 500px;" @pageChange="onPageChange">
@@ -268,86 +171,14 @@ play("Carousel", module)
     },
     methods: {
       onPageChange(currentPage) {
-        this.$log(`Captured [pageChange] event. Current page is ${currentPage}`)
-      },
-    }
-  })
-  .add("slideclick event", {
-    template:
-      `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;">
-          <slide v-for="slide in slides" :key="slide" @slideclick="onSlideClick">
-            <img style="width: 100%;" :src="slide" />
-          </slide>
-        </carousel>
-      </div>`,
-    components: {
-      Carousel,
-      Slide
-    },
-    data() {
-      return {
-        slides: images
-      }
-    },
-    methods: {
-      onSlideClick(currentDataset) {
-        this.$log(`Captured [slideclick] event. Current dataset is ${JSON.stringify(currentDataset)}`)
-      },
-    }
-  })
-  .add("slide-click event", {
-    template:
-      `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;">
-          <slide v-for="slide in slides" :key="slide" @slide-click="onSlideClick">
-            <img style="width: 100%;" :src="slide" />
-          </slide>
-        </carousel>
-      </div>`,
-    components: {
-      Carousel,
-      Slide
-    },
-    data() {
-      return {
-        slides: images
-      }
-    },
-    methods: {
-      onSlideClick(currentDataset) {
-        this.$log(`Captured [slide-click] event. Current dataset is ${JSON.stringify(currentDataset)}`)
-      },
-    }
-  })
-  .add("page-change event", {
-    template:
-      `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;" @page-change="onPageChange">
-          <slide v-for="slide in slides" :key="slide">
-            <img style="width: 100%;" :src="slide" />
-          </slide>
-        </carousel>
-      </div>`,
-    components: {
-      Carousel,
-      Slide
-    },
-    data() {
-      return {
-        slides: images
-      }
-    },
-    methods: {
-      onPageChange(currentPage) {
-        this.$log(`Captured [page-change] event. Current page is ${currentPage}`)
+        this.$log(`page changed to ${currentPage}`)
       },
     }
   })
   .add("NavigateTo pages", {
     template:
       `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;" :navigateTo="newPage" v-on:pagechange="pageChanged">
+        <carousel style="width: 500px;" :navigateTo="newPage" v-on:pageChange="pageChanged">
           <slide v-for="slide in slides" :key="slide">
             <img style="width: 100%;" :src= slide />
           </slide>
@@ -380,17 +211,15 @@ play("Carousel", module)
   .add("NavigateTo slides", {
     template:
       `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;" :navigateTo="navigateTo" :scrollPerPage=false v-on:pagechange="pageChanged">
-        <carousel style="width: 500px;" :navigateTo="newSlide" :scrollPerPage=false v-on:pagechange="pageChanged">
-        <carousel style="width: 500px;" :navigateTo="navigateTo" :scrollPerPage=false v-on:pagechange="pageChanged">
+        <carousel style="width: 500px;" :navigateTo="newSlide" :scrollPerPage=false v-on:pageChange="pageChanged">
           <slide v-for="slide in slides" :key="slide.src">
             <img style="width: 100%;" :src= slide />
           </slide>
         </carousel>
         <div style="float: left; z-index: 1000">
-          <button style="position: absolute; bottom: 20px; right: 350px" v-on:click="gotoSlide(0)">Goto slide 1</button>
-          <button style="position: absolute; bottom: 20px; right: 250px" v-on:click="gotoSlide(1)">Goto slide 2</button>
-          <button style="position: absolute; bottom: 20px; right: 50px" v-on:click="gotoSlide(4, false)">Goto slide 5 without animation</button>
+          <button style="position: absolute; bottom: 20px; right: 250px" v-on:click="gotoSlide(0)">Goto slide 1</button>
+          <button style="position: absolute; bottom: 20px; right: 150px" v-on:click="gotoSlide(1)">Goto slide 2</button>
+          <button style="position: absolute; bottom: 20px; right: 50px" v-on:click="gotoSlide(5)">Goto slide 5</button>
         </div>
       </div>`,
     components: {
@@ -400,22 +229,11 @@ play("Carousel", module)
     data(){
       return {
         newSlide: 0,
-        newSlideAnimation: true,
         slides: images
       }
     },
-    computed: {
-      navigateTo() {
-        if (this.newSlideAnimation)
-          return this.newSlide
-
-        else
-          return [this.newSlide, false]
-      }
-    },
     methods: {
-      gotoSlide(val, animation) {
-        this.newSlideAnimation = (animation === false ? false : true);
+      gotoSlide(val) {
         this.newSlide = val;
       },
       pageChanged(val) {
@@ -427,59 +245,7 @@ play("Carousel", module)
       h, containerWidth, [h(Carousel, { props: { spacePadding: 100, perPage: 1} }, generateSlideImages(h))]
       )
   )
-  .add("transitionStart event", {
-    template: `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel
-          style="width: 500px;"
-          @transitionStart="handleTransitionStart"
-        >
-          <slide v-for="slide in slides" :key="slide.src">
-            <img style="width: 100%;" :src= slide />
-          </slide>
-        </carousel>
-      </div>`,
-    data() {
-      return {
-        slides: images
-      }
-    },
-    components: {
-      Carousel,
-      Slide
-    },
-    methods: {
-      handleTransitionStart() {
-        this.$log('Captured [transitionStart] event')
-      }
-    }
-  })
-  .add("transition-start event", {
-    template: `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel
-          style="width: 500px;"
-          @transition-start="handleTransitionStart"
-        >
-          <slide v-for="slide in slides" :key="slide.src">
-            <img style="width: 100%;" :src= slide />
-          </slide>
-        </carousel>
-      </div>`,
-    data() {
-      return {
-        slides: images
-      }
-    },
-    components: {
-      Carousel,
-      Slide
-    },
-    methods: {
-      handleTransitionStart() {
-        this.$log('Captured [transition-start] event')
-      }
-    }
-  })
-  .add("transitionEnd event", {
+  .add("Transition end", {
     template: `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
         <carousel
           style="width: 500px;"
@@ -501,33 +267,7 @@ play("Carousel", module)
     },
     methods: {
       handleTransitionEnd() {
-        this.$log('Captured [transitionEnd] event')
-      }
-    }
-  })
-  .add("transition-end event", {
-    template: `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel
-          style="width: 500px;"
-          @transition-end="handleTransitionEnd"
-        >
-          <slide v-for="slide in slides" :key="slide.src">
-            <img style="width: 100%;" :src= slide />
-          </slide>
-        </carousel>
-      </div>`,
-    data() {
-      return {
-        slides: images
-      }
-    },
-    components: {
-      Carousel,
-      Slide
-    },
-    methods: {
-      handleTransitionEnd() {
-        this.$log('Captured [transition-end] event')
+        alert('transition end!')
       }
     }
   })
@@ -560,7 +300,7 @@ play("Carousel", module)
     template:
       `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
         <carousel style="width: 500px;" :navigateTo="newSlide" :scrollPerPage=false>
-          <slide v-for="(slide, index) in slides" :key="slide.src" :data-index="index" v-on:slideclick="onSlideClick">
+          <slide v-for="(slide, index) in slides" :key="slide.src" :data-index="index" v-on:slideClick="onSlideClick">
             <img style="width: 100%;" :src= slide />
           </slide>
         </carousel>
@@ -631,54 +371,6 @@ play("Carousel", module)
     data() {
       return {
         slides: images
-      }
-    }
-  })
-  .add("Pagination position top", h => createContainer(
-    h, containerWidth, [h(Carousel, { props: { paginationPosition: 'top' } }, generateSlideImages(h))]
-  ))
-  .add("Pagination position top-overlay", h => createContainer(
-    h, containerWidth, [h(Carousel, { props: { paginationPosition: 'top-overlay' } }, generateSlideImages(h))]
-  ))
-  .add("Pagination position bottom-overlay", h => createContainer(
-    h, containerWidth, [h(Carousel, { props: { paginationPosition: 'bottom-overlay' } }, generateSlideImages(h))]
-  ))
-  .add("With custom pagination titles", {
-    template:
-      `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;">
-          <slide v-for="(slide, index) in slides" :key="slide" :title="'This is my slide #' + index ">
-            <img style="width: 100%;" :src="slide" />
-          </slide>
-        </carousel>
-      </div>`,
-    components: {
-      Carousel,
-      Slide
-    },
-    data() {
-      return {
-        slides: images
-      }
-    }
-  })
-  .add("With custom pagination dot number", {
-    template:
-      `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px" :maxPaginationDotCount="5" :perPage="1">
-          <slide v-for="(slide, index) in slides" :key="slide" :title="'This is my slide #' + index ">
-            <img style="width: 100%;" :src="slide" />
-          </slide>
-        </carousel>
-      </div>`,
-
-    components: {
-      Carousel,
-      Slide
-    },
-    data() {
-      return {
-        slides: LargeAmountImages
       }
     }
   })
